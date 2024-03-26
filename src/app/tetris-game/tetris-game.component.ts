@@ -259,22 +259,22 @@ export class TetrisGameComponent {
   }
 
   checkForClear() : Promise<void> {
-    for(let i = this.GameBlocks.length - 1; i >= 2; i--){
-      if(this.GameBlocks[i].every(cell => cell.settled)){
-        this.GameBlocks[i].forEach(cell => cell.settled = false);
-        let current = i;
-        let j = i - 1;
+    let bottom = this.GameBlocks.length - 1;
+    while(this.GameBlocks[bottom].every(cell => cell.settled)){
+      this.GameBlocks[bottom].forEach(cell => cell.settled = false);
+      let current = bottom;
+      let j = bottom - 1;
 
-        while(j >= 0){
-          for(let k = 0; k < this.GameBlocks[j].length; k++){
-            this.GameBlocks[current][k].color = this.GameBlocks[j][k].color;
-            this.GameBlocks[current][k].settled = this.GameBlocks[j][k].settled;
-          }
-          j--;
-          current--;
+      while(j >= 0){
+        for(let k = 0; k < this.GameBlocks[j].length; k++){
+          this.GameBlocks[current][k].color = this.GameBlocks[j][k].color;
+          this.GameBlocks[current][k].settled = this.GameBlocks[j][k].settled;
         }
+        j--;
+        current--;
       }
     }
+    
 
     return new Promise<void>((resolve) => resolve());
   }

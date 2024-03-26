@@ -41,9 +41,9 @@ export abstract class Tetromino {
   export class TetrominoT extends Tetromino {
     override image = "assets/purple.jpg";
     override hitbox: boolean[][] = [
-      [false, false, false],
-      [true, true, true],
       [false, true, false],
+      [true, true, true],
+      [false, false, false],
     ];
   }
   

@@ -13,7 +13,7 @@ export class TouchButtonComponent {
 
   @Output() pressed: EventEmitter<void> = new EventEmitter<void>();
   @Output() released: EventEmitter<void> = new EventEmitter<void>();
-
+/*
   @ViewChild('touchButton') touchButton: any;
 
   @HostListener('touchstart', ['$event'])
@@ -31,7 +31,7 @@ export class TouchButtonComponent {
       this.release();
     }
   }
-
+*/
   press(){
     this.pressed.emit();
   }

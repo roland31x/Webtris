@@ -25,6 +25,13 @@
     font-size: 1.8vw;
 }
 
+.unselectable {
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Webkit (Safari, Chrome) browsers */
+    -moz-user-select: none; /* Mozilla Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+  }
+
 .margin-top-1{
     margin-top: 1vh;
 }
@@ -39,6 +46,7 @@
 
 .grid-container{
     display: grid;
+    position: relative;
 }
 
 .main-decoration{

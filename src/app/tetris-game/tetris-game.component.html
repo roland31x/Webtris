@@ -1,31 +1,32 @@
 
-    <div class="grid-container main-decoration">
-        <div class="row-container" *ngFor="let row of this.GameBlocks">
-            <app-block class="block-container" *ngFor="let block of row" [GameBlock]="block"></app-block>
-        </div>
+<div class="grid-container main-decoration">
+    <div class="row-container" *ngFor="let row of this.GameBlocks">
+        <app-block class="block-container" *ngFor="let block of row" [GameBlock]="block"></app-block>
     </div>
+    <div class="overlay" *ngIf="!this.playing"></div>
+</div>
 
-    <div class="middle flex-align flex-column" *ngIf="!this.playing">
-        <div class="header-text big-text margin-bottom-2">WEBTRIS</div>
-        <button class="play-button" (click)="PlayGame()"> Play Game </button>
-    </div>
+<div class="middle flex-align flex-column" *ngIf="!this.playing">
+    <div class="header-text big-text margin-bottom-2">WEBTRIS</div>
+    <button class="play-button" (click)="PlayGame()"> Play Game </button>
+</div>
 
-    <div class="right">
-        <app-block-viewer [toView]="this.nextBlock" [mainText]="'Next Block'"></app-block-viewer>
-        <div class="down">
-            <app-touch-button [text]="'=>'" (pressed)="handlePress('ARROWRIGHT')" (released)="handleRelease('ARROWRIGHT')"></app-touch-button>
-        </div>
+<div class="right">
+    <app-block-viewer [toView]="this.nextBlock" [mainText]="'Next Block'"></app-block-viewer>
+    <div class="down">
+        <app-touch-button [text]="'=>'" (pressed)="handlePress('ARROWRIGHT')" (released)="handleRelease('ARROWRIGHT')"></app-touch-button>
     </div>
+</div>
 
-    <div class="left">
-        <div class="up">
-            <app-touch-button [text]="'Hold'" (pressed)="handlePress('C')" (released)="handleRelease('C')"></app-touch-button>
-        </div>
-        <app-block-viewer [toView]="this.heldBlock" [mainText]="'Held Block'"></app-block-viewer>
-        <div class="down">
-            <app-touch-button [text]="'&lt;='" (pressed)="handlePress('ARROWLEFT')" (released)="handleRelease('ARROWLEFT')"></app-touch-button>
-        </div>
+<div class="left">
+    <div class="up">
+        <app-touch-button [text]="'Hold'" (pressed)="handlePress('C')" (released)="handleRelease('C')"></app-touch-button>
     </div>
+    <app-block-viewer [toView]="this.heldBlock" [mainText]="'Held Block'"></app-block-viewer>
+    <div class="down">
+        <app-touch-button [text]="'&lt;='" (pressed)="handlePress('ARROWLEFT')" (released)="handleRelease('ARROWLEFT')"></app-touch-button>
+    </div>
+</div>
 
     
 
