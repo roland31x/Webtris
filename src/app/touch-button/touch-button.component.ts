@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-touch-button',
@@ -14,16 +14,22 @@ export class TouchButtonComponent {
   @Output() pressed: EventEmitter<void> = new EventEmitter<void>();
   @Output() released: EventEmitter<void> = new EventEmitter<void>();
 
-  @HostListener('document:touchstart', ['$event'])
+  @ViewChild('touchButton') touchButton: any;
+
+  @HostListener('touchstart', ['$event'])
   onTouchStart(event: TouchEvent) {
-    console.log("Touch started");
-    this.press();
+    if(event.target == this.touchButton.nativeElement){
+      console.log("Touch started");
+      this.press();
+    }
   }
 
-  @HostListener('document:touchend', ['$event'])
+  @HostListener('touchend', ['$event'])
   onTouchEnd(event: TouchEvent) {
-    console.log("Touch ended");
-    this.release();
+    if(event.target == this.touchButton.nativeElement){
+      console.log("Touch end");
+      this.release();
+    }
   }
 
   press(){
