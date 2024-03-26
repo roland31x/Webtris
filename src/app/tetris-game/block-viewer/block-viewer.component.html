@@ -1,0 +1,9 @@
+<div class="block-view flex-align flex-column main-decoration flex-justify-space-around">
+    <div class="header-text margin-top-1">{{this.mainText}}</div>
+    <div class="grid-container margin-bottom-2">
+        <div class="row-container" *ngFor="let row of this.blockView">
+            <app-block class="block-container" *ngFor="let block of row" [GameBlock]="block"></app-block>
+        </div>
+    </div>
+</div>
+
