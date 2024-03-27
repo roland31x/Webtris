@@ -65,6 +65,7 @@ export class TetrisGameComponent {
   currentBlock: Tetromino | null = null;
   nextBlock: Tetromino | null = null;
   heldBlock: Tetromino | null = null;
+  canSwap: boolean = true;
 
   get falltimer(): number {
     return 1000 - (((this.currentLevel > 19 ? 19 : this.currentLevel ) - 1) * 50);
@@ -152,15 +153,21 @@ export class TetrisGameComponent {
   }
 
   holdFunction() : void {
-    if(this.heldBlock){
-      this.currentList.push(this.nextBlock!);
-      this.nextBlock = this.heldBlock;
-      this.heldBlock = null;
-    }
-    else{
-      this.heldBlock = this.nextBlock;
-      this.nextBlock = this.currentList.pop()!;
-      this.checkRefill();
+    if(this.canSwap){
+      if(this.heldBlock){
+        let temp = this.heldBlock;
+        this.heldBlock = this.currentBlock;
+        this.heldBlock!.ResetPosition();
+        this.currentBlock = temp;
+      }
+      else{
+        this.heldBlock = this.currentBlock;
+        this.heldBlock!.ResetPosition();
+        this.currentBlock = this.nextBlock;
+        this.nextBlock = this.currentList.pop()!;
+        this.checkRefill();
+      }
+      this.canSwap = false;
     }
   }
   
@@ -307,6 +314,9 @@ export class TetrisGameComponent {
       await this.checkForClear();
 
       number++;
+
+      this.canSwap = true;
+
     }
 
     this.gameOver = true;

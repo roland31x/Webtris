@@ -10,6 +10,11 @@ export abstract class Tetromino {
     public Rotate() : void {
       this.hitbox = this.RotateHitbox(this.hitbox);
     }
+
+    public ResetPosition(){
+      this.height = 0;
+      this.offset = 3;
+    }
   
     private RotateHitbox(hitbox: boolean[][]) : boolean[][]{
       let clone = hitbox.map((arr) => [...arr]);

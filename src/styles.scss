@@ -4,12 +4,17 @@
     --blue-200: #1b1a55;
     --blue-300: #535c91;
     --blue-400: #9290c3;
-    --main-gradient: linear-gradient(to bottom, var(--blue-100), var(--blue-200));
+
+    --monochrome-1: #54526e;
+
+    --main-gradient: linear-gradient(180deg, var(--blue-100), var(--monochrome-1));
+
+    
 }
 
 .main-body{
-    background-color: black;
-    background-image: url('assets/background.jpg');
+    background-color: var(--blue-100);
+   // background-image: url('assets/bg.svg');
 
     background-size: cover;
     margin: 0px;
@@ -56,7 +61,7 @@
     border-radius: 5px;
     border-style: outset;
     border-color: var(--blue-400);
-    border-width: calc((0.33vh + 0.33vw) / 2);
+    border-width: calc((0.22vh + 0.22vw) / 2);
 }
 
 .full-size{
