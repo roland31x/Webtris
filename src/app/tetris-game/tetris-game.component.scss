@@ -58,6 +58,15 @@
     transform: translate(-50%, -200%); 
 }
 
+.progress-pos{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc((57.66vw + 57.66vh) / 2);
+    height: calc((2vw + 2vh) / 2);
+    transform: translate(-50%, -1150%); 
+}
+
 
 
 .play-button {

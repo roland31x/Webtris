@@ -16,10 +16,14 @@ export class TouchButtonComponent {
   @Input() holdEvent: boolean = false;
   @Input() holdEventThreshold: number = 1000;
 
+  private touch_debounce = 150;
+  private touched = false;
+
   @Output() pressed: EventEmitter<void> = new EventEmitter<void>();
   @Output() released: EventEmitter<void> = new EventEmitter<void>();
-
   @Output() held: EventEmitter<void> = new EventEmitter<void>();
+
+  @ViewChild('touchButton') touchButton: any;
 
   private _pressedAmount: number = 0;
   get pressedAmount() : number{
@@ -43,10 +47,11 @@ export class TouchButtonComponent {
     return this.repeat_press;
   }
 
-/*
+
  
   @HostListener('touchstart', ['$event'])
   onTouchStart(event: TouchEvent) {
+    
     if(event.target == this.touchButton.nativeElement){
       console.log("Touch started");
       this.press();
@@ -58,12 +63,22 @@ export class TouchButtonComponent {
     if(event.target == this.touchButton.nativeElement){
       console.log("Touch end");
       this.release();
+      this.touched = true;
+      setTimeout(() => {
+        this.touched = false;
+      }, this.touch_debounce);
     }
   }
-*/
+
   press(){
+    if(this.touched){
+      return;
+    }
+
     this.pressedAmount = 1;
     this.pressed.emit();
+    console.log("Pressed");
+
     if(this.repeat){
       if(this.repeat_active){
         clearInterval(this.repeat_press);
@@ -78,7 +93,10 @@ export class TouchButtonComponent {
     
   }
   release(){
-    clearInterval(this.repeat_press);
+    if(this.repeat){
+      clearInterval(this.repeat_press);
+    }
+    
     this.pressedAmount = 0;
     this.released.emit();
   }

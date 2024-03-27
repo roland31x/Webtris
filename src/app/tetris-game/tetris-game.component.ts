@@ -134,6 +134,7 @@ export class TetrisGameComponent {
 
     this.currentLevel = 1;
     this.linesCleared = 0;
+    this.currentScore = 0;
     this.gameOver = false;
   
   }
@@ -226,10 +227,10 @@ export class TetrisGameComponent {
     if(this.currentBlock != null){
       let newoffset = this.currentBlock.offset + direction;
 
-      for(let heighdiff = 0; heighdiff <= 1; heighdiff++){
-        if(this.HitboxCheck(this.currentBlock.hitbox, this.currentBlock.height + heighdiff, newoffset)){
+      for(let heightdiff = 0; heightdiff <= 1; heightdiff++){
+        if(this.HitboxCheck(this.currentBlock.hitbox, this.currentBlock.height + heightdiff, newoffset)){
           this.currentBlock.offset = newoffset;
-          this.currentBlock.height = this.currentBlock.height + heighdiff;
+          this.currentBlock.height = this.currentBlock.height + heightdiff;
           return;
         }
       }
@@ -241,11 +242,11 @@ export class TetrisGameComponent {
     if(this.currentBlock != null){
       for(let rotation = 1; rotation < 4; rotation++){
         let newhitbox = this.currentBlock.GetRotatedHitbox(rotation);
-        for(let heighdiff = 0; heighdiff <= 1; heighdiff++){
+        for(let heightdiff = 0; heightdiff <= 1; heightdiff++){
           for(let offsetdiff of [0, -1, 1]){
-            if(this.HitboxCheck(newhitbox, this.currentBlock.height + heighdiff, this.currentBlock.offset + offsetdiff)){
+            if(this.HitboxCheck(newhitbox, this.currentBlock.height + heightdiff, this.currentBlock.offset + offsetdiff)){
               this.currentBlock.hitbox = newhitbox;
-              this.currentBlock.height = this.currentBlock.height + heighdiff;
+              this.currentBlock.height = this.currentBlock.height + heightdiff;
               this.currentBlock.offset = this.currentBlock.offset + offsetdiff;
               return;
             }
@@ -332,7 +333,7 @@ export class TetrisGameComponent {
         this.GameBlocks[row].forEach(cell => cell.color = block.image);
       }
       await new Promise<void>((resolve) => {
-        setTimeout(() => resolve(), 250);
+        setTimeout(() => resolve(), 80);
       });
     }
 
@@ -340,10 +341,13 @@ export class TetrisGameComponent {
       this.GameBlocks[row].forEach(cell => cell.settled = false);
     }
     await new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 100);
+      setTimeout(() => resolve(), 50);
     });
 
     this.linesCleared += toClear.length;
+
+    let scores = [40, 100, 300, 1200]
+    this.currentScore += scores[toClear.length - 1] * this.currentLevel;
 
     while(toClear.length > 0){
       let row = toClear.pop()!;
@@ -374,10 +378,13 @@ export class TetrisGameComponent {
             let toAlter = this.GameBlocks[this.currentBlock.height + i][this.currentBlock.offset + j];
             toAlter.color = this.currentBlock.image;
             toAlter.settled = true;
+            
           }
         }
       }
     }
+
+    this.currentScore += this.currentBlock!.height!;
   }
 
   async blockLifecycle() : Promise<void> {

@@ -1,12 +1,9 @@
-
-
 <div class="grid-container main-decoration">
     <div class="row-container" *ngFor="let row of this.GameBlocks">
         <app-block class="block-container" *ngFor="let block of row" [GameBlock]="block"></app-block>
     </div>
 
     <div class="overlay-left-anchor gray-066" *ngIf="!this.playing"></div>
-
 </div>
 
 <div class="middle flex-align flex-column" *ngIf="!this.playing">
@@ -15,13 +12,17 @@
     <div class="flex-align flex-column" *ngIf="this.gameOver">
         <div class="header-text"> Game Over!</div>
         <div class="header-text">Score: {{this.currentScore}}</div>
-    </div>
+    </div>  
+</div>
+
+<div class="progress-pos main-decoration">
+    <app-progress-bar class="full-size" [progress]="this.currentLevelProgress"></app-progress-bar>
 </div>
 
 <div class="right">
 
     <div class="level flex-align main-decoration">
-        <app-progress-bar class="full-size" [progress]="this.currentLevelProgress"></app-progress-bar>
+        <div class="header-text">{{this.currentScore}}</div>
     </div>
 
     <app-block-viewer [toView]="this.nextBlock" [mainText]="'Next Block'"></app-block-viewer>
@@ -33,7 +34,7 @@
     </div>
 
     <div class="downl">
-        <app-touch-button [size]="6" (pressed)="handlePress('ARROWLEFT')" (released)="handleRelease('ARROWLEFT')">
+        <app-touch-button [size]="6.5" (pressed)="handlePress('ARROWLEFT')" (released)="handleRelease('ARROWLEFT')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
             </svg>
@@ -41,7 +42,7 @@
     </div>
 
     <div class="downr">
-        <app-touch-button [size]="6" (pressed)="handlePress('ARROWRIGHT')" (released)="handleRelease('ARROWRIGHT')">
+        <app-touch-button [size]="6.5" (pressed)="handlePress('ARROWRIGHT')" (released)="handleRelease('ARROWRIGHT')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
             </svg>
@@ -66,7 +67,7 @@
     <app-block-viewer [toView]="this.heldBlock" [mainText]="'Held Block'"></app-block-viewer>
 
     <div class="downl">
-        <app-touch-button [size]="6" (pressed)="handlePress('ARROWDOWN')" (released)="handleRelease('ARROWDOWN')">
+        <app-touch-button [size]="6.5" (pressed)="handlePress('ARROWDOWN')" (released)="handleRelease('ARROWDOWN')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>
               </svg>
@@ -74,7 +75,7 @@
     </div>
 
     <div class="downr">
-        <app-touch-button [size]="6" (pressed)="handlePress('ARROWUP')" (released)="handleRelease('ARROWUP')">
+        <app-touch-button [size]="6.5" (pressed)="handlePress('ARROWUP')" (released)="handleRelease('ARROWUP')">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
                 <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
