@@ -1,9 +1,10 @@
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-touch-button',
   standalone: true,
-  imports: [],
+  imports: [NgIf],
   templateUrl: './touch-button.component.html',
   styleUrl: './touch-button.component.scss'
 })
@@ -12,9 +13,30 @@ export class TouchButtonComponent {
   @Input() text: string = "Button";
   @Input() size: number = 10;
   @Input() repeat: boolean = true;
+  @Input() holdEvent: boolean = false;
+  @Input() holdEventThreshold: number = 1000;
 
   @Output() pressed: EventEmitter<void> = new EventEmitter<void>();
   @Output() released: EventEmitter<void> = new EventEmitter<void>();
+
+  @Output() held: EventEmitter<void> = new EventEmitter<void>();
+
+  private _pressedAmount: number = 0;
+  get pressedAmount() : number{
+    return this._pressedAmount;
+  }
+  set pressedAmount(value: number){
+    this._pressedAmount = value;
+    if(this.holdEvent && this._pressedAmount * 5 == this.holdEventThreshold){
+      this.held.emit();
+    }
+  }
+
+  get holdProgress(){
+    let actual = ((this.pressedAmount * 5) / this.holdEventThreshold) * 100;
+
+    return Math.round(Math.min(actual, 100));
+  }
 
   private repeat_press : any;
   private get repeat_active() : boolean{
@@ -40,17 +62,24 @@ export class TouchButtonComponent {
   }
 */
   press(){
+    this.pressedAmount = 1;
     this.pressed.emit();
-    if(this.repeat_active){
-      clearInterval(this.repeat_press);
-    }
     if(this.repeat){
-      this.repeat_press = setInterval(() =>this.pressed.emit(), 250);
+      if(this.repeat_active){
+        clearInterval(this.repeat_press);
+      }
+      this.repeat_press = setInterval(() => {
+        if(this.pressedAmount % 50 == 0){
+          this.pressed.emit(); 
+        }
+        this.pressedAmount++
+      }, 5);
     }
     
   }
   release(){
     clearInterval(this.repeat_press);
+    this.pressedAmount = 0;
     this.released.emit();
   }
   

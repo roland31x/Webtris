@@ -273,6 +273,11 @@ export class TetrisGameComponent {
     return true;
   }
 
+  public StopGame(){
+    this.playing = false;
+    this.resetGame();
+  }
+
   public async PlayGame() {
 
     if(this.playing){

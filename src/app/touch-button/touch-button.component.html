@@ -1,3 +1,8 @@
-<button #touchButton [style.width]="this.width" [style.height]="this.height" class="input-button flex-align header-text unselectable" (mousedown)="press()" (mouseup)="release()" (mouseleave)="release()" type="button">
+<button #touchButton [style.width]="this.width" [style.height]="this.height" class="input-button flex-align flex-column header-text unselectable" (mousedown)="press()" (mouseup)="release()" (mouseleave)="release()" type="button">  
+    
     <ng-content></ng-content>
+    <div *ngIf="this.holdEvent" class="flex-align">       
+        {{this.holdProgress}}%
+    </div> 
+   
 </button>

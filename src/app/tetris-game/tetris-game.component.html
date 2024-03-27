@@ -27,7 +27,7 @@
     <app-block-viewer [toView]="this.nextBlock" [mainText]="'Next Block'"></app-block-viewer>
 
     <div class="hold">
-        <app-touch-button [size]="9" [repeat]="false" (pressed)="resetGame()">
+        <app-touch-button [size]="9" [holdEvent]="true" [holdEventThreshold]="2500" (held)="StopGame()">
             RESET
         </app-touch-button>
     </div>
