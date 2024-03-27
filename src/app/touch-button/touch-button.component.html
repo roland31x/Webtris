@@ -1,1 +1,3 @@
-<button #touchButton class="input-button header-text unselectable" (mousedown)="press()" (mouseup)="release()">{{this.text}}</button>
+<button #touchButton [style.width]="this.width" [style.height]="this.height" class="input-button flex-align header-text unselectable" (mousedown)="press()" (mouseup)="release()" (mouseleave)="release()" type="button">
+    <ng-content></ng-content>
+</button>

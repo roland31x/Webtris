@@ -1,0 +1,9 @@
+.progress-bar {
+    background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    height: 100%;
+}
+
+.pg-overlay{
+    background: var(--main-gradient);
+    transition: width 0.5s ease-out;
+}

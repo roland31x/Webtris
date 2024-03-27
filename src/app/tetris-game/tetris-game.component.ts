@@ -6,12 +6,13 @@ import { Observable } from 'rxjs';
 import { Tetromino, TetrominoI, TetrominoJ, TetrominoL, TetrominoS, TetrominoSq, TetrominoT, TetrominoZ } from './game-classes/tetromino';
 import { BlockViewerComponent } from './block-viewer/block-viewer.component';
 import { TouchButtonComponent } from '../touch-button/touch-button.component';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 
 
 @Component({
   selector: 'app-tetris-game',
   standalone: true,
-  imports: [NgFor, NgIf, BlockComponent, BlockViewerComponent, TouchButtonComponent],
+  imports: [NgFor, NgIf, BlockComponent, BlockViewerComponent, TouchButtonComponent, ProgressBarComponent],
   templateUrl: './tetris-game.component.html',
   styleUrl: './tetris-game.component.scss'
 })
@@ -31,7 +32,7 @@ export class TetrisGameComponent {
     if(!this.playing){
       return;
     }
-
+    console.log(key);
     switch(key){
       case "ARROWLEFT":
         this.moveBlock(-1);
@@ -39,14 +40,14 @@ export class TetrisGameComponent {
       case "ARROWRIGHT":
         this.moveBlock(1);
         break;
-      case "S":
+      case "ARROWUP":
         this.rotateBlock();
         break;
       case "C":
         this.holdFunction();
         break;
       case "ARROWDOWN":
-        this.falltimer = 100;
+        this.quickFall = true;
         break;
     }
   }
@@ -54,7 +55,7 @@ export class TetrisGameComponent {
   handleRelease(key : string){
     switch(key){
       case "ARROWDOWN":
-        this.falltimer = this.currentbasetimer;
+        this.quickFall = false;
         break;
     }
   }
@@ -65,30 +66,75 @@ export class TetrisGameComponent {
   nextBlock: Tetromino | null = null;
   heldBlock: Tetromino | null = null;
 
-  falltimer: number = 1000;
-
-  currentbasetimer : number = 1000;
+  get falltimer(): number {
+    return 1000 - (((this.currentLevel > 19 ? 19 : this.currentLevel ) - 1) * 50);
+  }
+  quickFall: boolean = false;
 
   drawTimer = setInterval(() => { this.draw(); }, 10);
   doDraw: boolean = true;
+  drawCurrentBlock: boolean = true;
 
   playing: boolean = false;
+  gameOver: boolean = false;
 
   private blockList: Tetromino[] = [];
 
   private currentList: Tetromino[] = [];
+
+  private _currentLevel: number = 1;
+  get currentLevel(): number {
+    return this._currentLevel;
+  }
+  set currentLevel(value: number) {
+    this._currentLevel = value;
+  }
+
+  private _currentScore: number = 0;
+  get currentScore(): number {
+    return this._currentScore;
+  }
+  set currentScore(value: number) {
+    this._currentScore = value;
+  }
+
+  _linesCleared: number = 0;
+  get linesCleared(): number {
+    return this._linesCleared;
+  }
+  set linesCleared(value: number) {
+    this._linesCleared = value;
+    if(this._linesCleared >= this.levelRequirement){
+      this._linesCleared -= this.levelRequirement;
+      this.currentLevel++;
+    }
+  }
+
+  get currentLevelProgress(): number {
+    return (this.linesCleared / this.levelRequirement) * 100;
+  }
+
+  get levelRequirement(): number {
+    return 10 * this.currentLevel;
+  }
+
 
   constructor(){
     this.resetGame();
   }
 
   resetGame(){
+    this.playing = false;
     this.currentBlock = null;
     this.nextBlock = null;
     this.heldBlock = null;
     this.currentList = this.getRandomList();
     this.resetBlockList();
     this.GameBlocks.forEach(row => row.forEach(cell => cell.settled = false));
+
+    this.currentLevel = 1;
+    this.linesCleared = 0;
+    this.gameOver = false;
   
   }
 
@@ -145,7 +191,7 @@ export class TetrisGameComponent {
       }
     }
 
-    if(this.currentBlock != null){
+    if(this.currentBlock != null && this.drawCurrentBlock){
       for(let i = 0; i < this.currentBlock!.hitbox.length; i++){
         for(let j = 0; j < this.currentBlock!.hitbox.length; j++){
           if(this.currentBlock!.hitbox[i][j]){
@@ -209,7 +255,7 @@ export class TetrisGameComponent {
     }
   }
 
-  public HitboxCheck(hitbox: boolean[][], height: number, offset: number) : boolean {
+  HitboxCheck(hitbox: boolean[][], height: number, offset: number) : boolean {
     
     for(let i = 0; i < hitbox.length; i++){
       for(let j = 0; j < hitbox.length; j++){
@@ -233,9 +279,9 @@ export class TetrisGameComponent {
       return;
     }
 
-    this.playing = true;
-
     this.resetGame();
+
+    this.playing = true;
     
     let number = 0;
 
@@ -256,14 +302,50 @@ export class TetrisGameComponent {
 
       number++;
     }
+
+    this.gameOver = true;
   }
 
-  checkForClear() : Promise<void> {
-    let bottom = this.GameBlocks.length - 1;
-    while(this.GameBlocks[bottom].every(cell => cell.settled)){
-      this.GameBlocks[bottom].forEach(cell => cell.settled = false);
-      let current = bottom;
-      let j = bottom - 1;
+  async checkForClear() : Promise<void> {
+
+    let toClear = [];
+
+    for(let row = this.GameBlocks.length - 1; row >= 0; row--){
+      if(this.GameBlocks[row].every(cell => cell.settled)){
+        toClear.push(row);
+      }
+    }
+   
+    if(toClear.length == 0){
+      return;
+    }
+
+    this.drawCurrentBlock = false;
+
+    for(let block of this.blockList){
+      for(let row of toClear){
+        this.GameBlocks[row].forEach(cell => cell.color = block.image);
+      }
+      await new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 250);
+      });
+    }
+
+    for(let row of toClear){
+      this.GameBlocks[row].forEach(cell => cell.settled = false);
+    }
+    await new Promise<void>((resolve) => {
+      setTimeout(() => resolve(), 100);
+    });
+
+    this.linesCleared += toClear.length;
+
+    while(toClear.length > 0){
+      let row = toClear.pop()!;
+
+      this.GameBlocks[row].forEach(cell => cell.settled = false);
+      let current = row;
+      let j = row - 1;
 
       while(j >= 0){
         for(let k = 0; k < this.GameBlocks[j].length; k++){
@@ -275,8 +357,8 @@ export class TetrisGameComponent {
       }
     }
     
+    this.drawCurrentBlock = true;
 
-    return new Promise<void>((resolve) => resolve());
   }
 
   settle() : void {
@@ -297,9 +379,9 @@ export class TetrisGameComponent {
 
     while(this.currentBlock?.alive){
       await new Promise<void>((resolve) => {
-        setTimeout(() => resolve(), this.falltimer);
+        setTimeout(() => resolve(), this.quickFall? 100 : this.falltimer);
       });
-      this.fallBlock();
+      this.fallBlock();  
     }
 
   }
