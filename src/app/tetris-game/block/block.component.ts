@@ -15,6 +15,6 @@ export class BlockComponent {
   @Input() DefaultColor: string | null = null;
 
   Image() : string | null{
-    return this.GameBlock?.color ?? this.DefaultColor ?? "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwAB/AXNK9YAAAAASUVORK5CYII=";
+    return this.GameBlock?.color ?? this.DefaultColor ?? "assets/empty.png";
   }
 }
