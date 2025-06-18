@@ -12,4 +12,6 @@ DOWN ARROW - fall faster
 
 C - hold block 
 
+## Use on-screen buttons on phone
+
 
